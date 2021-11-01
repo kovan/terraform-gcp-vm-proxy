@@ -36,14 +36,14 @@ resource "google_compute_instance" "vm_proxy" {
 
 }
 
-resource "google_compute_network" "vpc_tr_network" {
-  name                    = "terraform-network"
+resource "google_compute_network" "vpc_proxy_vm" {
+  name                    = "proxy_vm"
   auto_create_subnetworks = "true"
 }
 
-resource "google_compute_firewall" "ssh-rule" {
-  name    = "demo-ssh"
-  network = google_compute_network.vpc_tr_network.self_link
+resource "google_compute_firewall" "ssh-tunnel" {
+  name    = "ssh-tunnel"
+  network = google_compute_network.vpc_proxy_vm.self_link
   allow {
     protocol = "tcp"
     ports    = ["22"]

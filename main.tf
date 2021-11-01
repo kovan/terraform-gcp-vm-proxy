@@ -13,31 +13,32 @@ provider "google" {
   zone    = "us-central1-c"
 }
 
-
-
 resource "google_compute_instance" "vm_proxy" {
-  name                      = "vm_proxy"
+  name                      = "vm-proxy"
   machine_type              = "f1-micro"
   allow_stopping_for_update = false
   boot_disk {
     initialize_params {
-      image = "ubuntu-os-pro-cloud/ubuntu-pro-2004-lts"
+      image = "centos-cloud/centos-8"
     }
   }
-  
+
+   metadata = {
+    ssh-keys = "bufetarcelmic_2:${file("~/.ssh/gcp-vm-proxy.pub")}"
+  }
+
   network_interface {
-    # A default network is created for all GCP projects
-    network = google_compute_network.vpc_tr_network.self_link
+    network = google_compute_network.vpc_proxy_vm.self_link
     access_config {
     }
   }
-
   metadata_startup_script = "${file("./script.sh")}"
 
+  tags = ["proxy"]
 }
 
 resource "google_compute_network" "vpc_proxy_vm" {
-  name                    = "proxy_vm"
+  name                    = "vpc-proxy-vm"
   auto_create_subnetworks = "true"
 }
 

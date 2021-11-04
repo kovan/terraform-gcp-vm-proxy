@@ -13,7 +13,7 @@ provider "google" {
   zone    = "us-central1-c"
 }
 
-resource "google_compute_instance" "vm_proxy" {
+resource "google_compute_instance" "vm-proxy" {
   name                      = "vm-proxy"
   machine_type              = "f1-micro"
   allow_stopping_for_update = false
@@ -23,18 +23,25 @@ resource "google_compute_instance" "vm_proxy" {
     }
   }
 
-   metadata = {
+  metadata = {
     ssh-keys = "bufetarcelmic_2:${file("~/.ssh/gcp-vm-proxy.pub")}"
   }
 
   network_interface {
     network = google_compute_network.vpc_proxy_vm.self_link
     access_config {
+      nat_ip = google_compute_address.static.address
     }
   }
-  metadata_startup_script = "${file("./script.sh")}"
+  metadata_startup_script = file("./script.sh")
 
-  tags = ["proxy"]
+  #tags = ["http-server", "https-server", "ssh"]
+
+}
+
+
+resource "google_compute_address" "static" {
+  name = "ipv4-address"
 }
 
 resource "google_compute_network" "vpc_proxy_vm" {
@@ -42,13 +49,31 @@ resource "google_compute_network" "vpc_proxy_vm" {
   auto_create_subnetworks = "true"
 }
 
-resource "google_compute_firewall" "ssh-tunnel" {
-  name    = "ssh-tunnel"
+
+
+resource "google_compute_firewall" "ssh-tunnel-fw" {
+  name    = "ssh-tunnel-fw"
   network = google_compute_network.vpc_proxy_vm.self_link
+
   allow {
     protocol = "tcp"
-    ports    = ["22"]
+    ports    = ["22","3000", "80", "8080", "3128"]
   }
-  #target_tags = ["terraform-instance"]
-  source_ranges = ["0.0.0.0/0"]
+
+  // source_ranges = ["0.0.0.0/0"]
+  // target_tags   = ["vm-proxy", "ssh-tunnel"]
+
+}
+
+resource "google_compute_firewall" "http-server-fw" {
+  name      = "http-server-fw"
+  network   = google_compute_network.vpc_proxy_vm.self_link
+
+  allow {
+    protocol = "tcp"
+    ports    = ["3000", "80", "8080", "3128"]
+  }
+
+ // source_ranges = ["0.0.0.0/0"]
+ // target_tags   = [ "http-server"]
 }

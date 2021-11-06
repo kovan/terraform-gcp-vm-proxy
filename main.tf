@@ -15,7 +15,7 @@ provider "google" {
 
 resource "google_compute_instance" "vm-proxy" {
   name                      = "vm-proxy"
-  machine_type              = "f1-micro"
+  machine_type              = "g1-small"
   allow_stopping_for_update = false
   boot_disk {
     initialize_params {
@@ -30,7 +30,8 @@ resource "google_compute_instance" "vm-proxy" {
   network_interface {
     network = google_compute_network.vpc_proxy_vm.self_link
     access_config {
-      nat_ip = google_compute_address.static.address
+      // nat_ip = google_compute_address.static.address
+      nat_ip = "34.68.21.183"
     }
   }
   metadata_startup_script = file("./script.sh")
@@ -39,10 +40,6 @@ resource "google_compute_instance" "vm-proxy" {
 
 }
 
-
-resource "google_compute_address" "static" {
-  name = "ipv4-address"
-}
 
 resource "google_compute_network" "vpc_proxy_vm" {
   name                    = "vpc-proxy-vm"
@@ -77,3 +74,4 @@ resource "google_compute_firewall" "http-server-fw" {
  // source_ranges = ["0.0.0.0/0"]
  // target_tags   = [ "http-server"]
 }
+

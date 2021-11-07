@@ -7,36 +7,37 @@ sudo yum update -y
 sudo yum install squid -y
 
 # add here the configuration for the squid proxy server
-
+# https://elatov.github.io/2019/01/using-squid-to-proxy-ssl-sites/
 # start squid server
 sudo squid
 
-sudo yum install wget -y
 
-wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz
-export PATH=$PATH:/usr/local/go/bin
+# sudo yum install wget -y
+# wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz
+# sudo tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz
+# export PATH=$PATH:/usr/local/go/bin
 
-mkdir go-server && cd go-server
-go mod init server.com
-go get github.com/gofiber/fiber/v2
-cat <<EOF > main.go
-package main
+# mkdir go-server && cd go-server
+# go mod init server.com
+# go get github.com/gofiber/fiber/v2
 
-import (
-    "github.com/gofiber/fiber/v2"
-)
+# cat <<EOF > main.go
+# package main
 
-func main() {
+# import (
+#     "github.com/gofiber/fiber/v2"
+# )
 
-    app := fiber.New()
+# func main() {
 
-    app.Get("/", func(c *fiber.Ctx) error {
-        return c.SendString("Hello World")
-    })
+#     app := fiber.New()
 
-    app.Listen(":3000")
-}
-EOF
-go get github.com/gofiber/fiber/v2
-go run main.go
+#     app.Get("/", func(c *fiber.Ctx) error {
+#         return c.SendString("Hello World")
+#     })
+
+#     app.Listen(":3000")
+# }
+# EOF
+# go get github.com/gofiber/fiber/v2
+# go run main.go

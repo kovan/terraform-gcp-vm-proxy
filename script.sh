@@ -7,7 +7,7 @@ sudo yum update -y
 sudo yum install squid -y
 
 # add here the configuration for the squid proxy server
-sudo sed 's/http_access deny all/http_access allow all/' /etc/squid/squid.conf
+sudo sed -i 's/http_access deny all/http_access allow all/' /etc/squid/squid.conf
 
 # enable ssl HTTPS 
 # https://elatov.github.io/2019/01/using-squid-to-proxy-ssl-sites/

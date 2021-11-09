@@ -9,7 +9,6 @@ sudo yum install squid -y
 # add here the configuration for the squid proxy server
 sudo sed 's/http_access deny all/http_access allow all/' /etc/squid/squid.conf
 
-# enable ssl HTTPS 
 # https://elatov.github.io/2019/01/using-squid-to-proxy-ssl-sites/
 sudo iptables -L -n -v | grep 3128
 openssl req -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -extensions v3_ca -keyout squid-ca-key.pem -out squid-ca-cert.pem -subj "/C=IT/ST=Pisa/L=Pisa/O=IT/CN=www.proxy.it"
@@ -24,6 +23,7 @@ sudo chown squid:squid -R /var/lib/ssl_db
 sudo systemctl enable squid
 sudo systemctl start squid
 sudo systemctl status squid.service
+
 
 # sudo yum install wget -y
 # wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz

@@ -11,7 +11,7 @@ terraform {
 // provide the project ID and the region 
 // for the Google Cloud Compute Virtual Machine 
 provider "google" {
-  project = "steel-wharf-330805"
+  project = "dogwood-harmony-416905"
   region  = "us-central1"
   zone    = "us-central1-c"
 }
@@ -22,25 +22,25 @@ provider "google" {
 // with a custom image (the latest centos-cloud/centos-8 image)
 resource "google_compute_instance" "vm-proxy" {
   name                      = "vm-proxy"
-  machine_type              = "f1-micro"
+  machine_type              = "e2-micro"
   allow_stopping_for_update = false
   boot_disk {
     initialize_params {
-      image = "centos-cloud/centos-8"
+      image = "almalinux-cloud/almalinux-8"
     }
   }
 
   metadata = {
-    ssh-keys = "tutorial_users:${file("~/.ssh/gcp-vm-proxy.pub")}"
+    ssh-keys = "tutorial_users:${file("~/.ssh/google_compute_engine.pub")}"
   }
 
   network_interface {
     network = google_compute_network.vpc_proxy_vm.self_link
     access_config {
       // let google cloud generate an IP address
-      //nat_ip = google_compute_address.static.address
+      nat_ip = google_compute_address.static.address
       // or use an already declared static ip
-      nat_ip = "34.68.21.183" 
+      // nat_ip = "34.121.208.216" 
     }
   }
   metadata_startup_script = file("./script.sh")
